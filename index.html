@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gymmer Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #000;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gymmer Simulator</h1>
+    <p>Bắt đầu hành trình tập gym và trở thành nhà vô địch Mr.O!</p>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Thiết lập trò chơi cơ bản
+        let player = {
+            x: 50,
+            y: 300,
+            width: 50,
+            height: 50,
+            color: 'blue',
+            velocityY: 0,
+            gravity: 0.5,
+            jumpPower: -10
+        };
+
+        let ground = {
+            x: 0,
+            y: 350,
+            width: canvas.width,
+            height: 50,
+            color: 'green'
+        };
+
+        // Vẽ đối tượng
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function drawGround() {
+            ctx.fillStyle = ground.color;
+            ctx.fillRect(ground.x, ground.y, ground.width, ground.height);
+        }
+
+        // Cập nhật chuyển động
+        function update() {
+            player.velocityY += player.gravity;
+            player.y += player.velocityY;
+
+            // Chặn nhân vật không rơi qua mặt đất
+            if (player.y + player.height > ground.y) {
+                player.y = ground.y - player.height;
+                player.velocityY = 0;
+            }
+        }
+
+        // Xử lý nhảy
+        function jump() {
+            if (player.y + player.height === ground.y) {
+                player.velocityY = player.jumpPower;
+            }
+        }
+
+        // Xử lý bàn phím
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                jump();
+            }
+        });
+
+        // Vòng lặp trò chơi
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGround();
+            drawPlayer();
+            update();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
